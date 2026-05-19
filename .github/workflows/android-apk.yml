@@ -2,10 +2,63 @@ name: Build Android APK
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/android-apk.yml"
+      - "new-chat/android-app/**"
+      - "new-chat/index.html"
+      - "new-chat/styles.css"
+      - "new-chat/app.js"
+      - "new-chat/saved-prompts.json"
+
+permissions:
+  contents: read
 
 jobs:
-  test:
+  build-apk:
+    name: Build debug APK
     runs-on: ubuntu-latest
+
     steps:
-      - name: Test workflow
-        run: echo "Actions works"
+      - name: Checkout project
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.10"
+
+      - name: Prepare Android SDK
+        run: |
+          SDKMANAGER="${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager"
+          if [ ! -x "$SDKMANAGER" ]; then
+            SDKMANAGER="$(command -v sdkmanager)"
+          fi
+          yes | "$SDKMANAGER" --licenses
+          "$SDKMANAGER" "platforms;android-35" "build-tools;35.0.0"
+
+      - name: Sync web assets
+        run: |
+          mkdir -p new-chat/android-app/app/src/main/assets
+          cp new-chat/index.html new-chat/android-app/app/src/main/assets/index.html
+          cp new-chat/styles.css new-chat/android-app/app/src/main/assets/styles.css
+          cp new-chat/app.js new-chat/android-app/app/src/main/assets/app.js
+          cp new-chat/saved-prompts.json new-chat/android-app/app/src/main/assets/saved-prompts.json
+
+      - name: Build debug APK
+        working-directory: new-chat/android-app
+        run: gradle assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: writing-prompt-room-debug-apk
+          path: new-chat/android-app/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 14
