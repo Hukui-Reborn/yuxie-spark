@@ -5,11 +5,11 @@ on:
   push:
     paths:
       - ".github/workflows/android-apk.yml"
-      - "new-chat/android-app/**"
-      - "new-chat/index.html"
-      - "new-chat/styles.css"
-      - "new-chat/app.js"
-      - "new-chat/saved-prompts.json"
+      - "android-app/**"
+      - "index.html"
+      - "styles.css"
+      - "app.js"
+      - "saved-prompts.json"
 
 permissions:
   contents: read
@@ -45,20 +45,20 @@ jobs:
 
       - name: Sync web assets
         run: |
-          mkdir -p new-chat/android-app/app/src/main/assets
-          cp new-chat/index.html new-chat/android-app/app/src/main/assets/index.html
-          cp new-chat/styles.css new-chat/android-app/app/src/main/assets/styles.css
-          cp new-chat/app.js new-chat/android-app/app/src/main/assets/app.js
-          cp new-chat/saved-prompts.json new-chat/android-app/app/src/main/assets/saved-prompts.json
+          mkdir -p android-app/app/src/main/assets
+          cp index.html android-app/app/src/main/assets/index.html
+          cp styles.css android-app/app/src/main/assets/styles.css
+          cp app.js android-app/app/src/main/assets/app.js
+          cp saved-prompts.json android-app/app/src/main/assets/saved-prompts.json
 
       - name: Build debug APK
-        working-directory: new-chat/android-app
+        working-directory: android-app
         run: gradle assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: writing-prompt-room-debug-apk
-          path: new-chat/android-app/app/build/outputs/apk/debug/app-debug.apk
+          path: android-app/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 14

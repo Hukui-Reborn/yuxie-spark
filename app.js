@@ -542,7 +542,7 @@ function formatDateForFile(date = new Date()) {
 
 function savedToMarkdown() {
   const lines = [
-    "# 提问小室收藏",
+    "# 语写火花收藏",
     "",
     `导出时间：${new Intl.DateTimeFormat("zh-CN", {
       dateStyle: "medium",
@@ -584,7 +584,7 @@ function exportSaved() {
     return;
   }
 
-  const filename = `提问小室收藏-${formatDateForFile()}.md`;
+  const filename = `语写火花收藏-${formatDateForFile()}.md`;
   const markdown = savedToMarkdown();
 
   if (hasAndroidStorage && typeof window.AndroidStorage.shareMarkdown === "function") {
