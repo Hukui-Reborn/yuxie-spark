@@ -2,6 +2,8 @@ package com.hukui.writingpromptroom;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
@@ -10,6 +12,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import org.json.JSONArray;
+
+import androidx.core.content.FileProvider;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -86,6 +90,46 @@ public class MainActivity extends Activity {
             } catch (Exception error) {
                 return false;
             }
+        }
+
+        @JavascriptInterface
+        public synchronized boolean shareMarkdown(String fileName, String content) {
+            try {
+                File exportDir = new File(getCacheDir(), "exports");
+                if (!exportDir.exists() && !exportDir.mkdirs()) {
+                    return false;
+                }
+
+                String safeName = sanitizeFileName(fileName == null || fileName.trim().isEmpty()
+                        ? "writing-prompts.md"
+                        : fileName);
+                File exportFile = new File(exportDir, safeName);
+                FileOutputStream stream = new FileOutputStream(exportFile, false);
+                stream.write((content == null ? "" : content).getBytes(StandardCharsets.UTF_8));
+                stream.close();
+
+                Uri uri = FileProvider.getUriForFile(
+                        MainActivity.this,
+                        getPackageName() + ".fileprovider",
+                        exportFile
+                );
+
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/markdown");
+                intent.putExtra(Intent.EXTRA_SUBJECT, safeName);
+                intent.putExtra(Intent.EXTRA_STREAM, uri);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                runOnUiThread(() -> startActivity(Intent.createChooser(intent, "导出收藏")));
+                return true;
+            } catch (Exception error) {
+                return false;
+            }
+        }
+
+        private String sanitizeFileName(String name) {
+            String cleaned = name.replaceAll("[\\\\/:*?\"<>|]", "_").trim();
+            return cleaned.endsWith(".md") ? cleaned : cleaned + ".md";
         }
 
         private void ensureFile() throws Exception {

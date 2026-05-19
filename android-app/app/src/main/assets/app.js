@@ -253,6 +253,7 @@ const elements = {
   promptGrid: document.querySelector("#promptGrid"),
   threadList: document.querySelector("#threadList"),
   copyThreadButton: document.querySelector("#copyThreadButton"),
+  exportSavedButton: document.querySelector("#exportSavedButton"),
   savedList: document.querySelector("#savedList"),
   savedCount: document.querySelector("#savedCount"),
   toast: document.querySelector("#toast"),
@@ -531,6 +532,71 @@ function currentToText() {
   ].join("\n");
 }
 
+function formatDateForFile(date = new Date()) {
+  return [
+    date.getFullYear(),
+    String(date.getMonth() + 1).padStart(2, "0"),
+    String(date.getDate()).padStart(2, "0"),
+  ].join("-");
+}
+
+function savedToMarkdown() {
+  const lines = [
+    "# 提问小室收藏",
+    "",
+    `导出时间：${new Intl.DateTimeFormat("zh-CN", {
+      dateStyle: "medium",
+      timeStyle: "short",
+    }).format(new Date())}`,
+    "",
+  ];
+
+  state.saved.forEach((item, index) => {
+    lines.push(`## ${index + 1}. ${item.tag || "收藏"}`, "");
+    lines.push(item.question || "");
+    if (item.createdAt) {
+      lines.push("", `收藏时间：${new Intl.DateTimeFormat("zh-CN", {
+        dateStyle: "medium",
+        timeStyle: "short",
+      }).format(new Date(item.createdAt))}`);
+    }
+    lines.push("", "---", "");
+  });
+
+  return lines.join("\n");
+}
+
+function downloadTextFile(filename, text) {
+  const blob = new Blob([text], { type: "text/markdown;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+function exportSaved() {
+  if (state.saved.length === 0) {
+    showToast("还没有可导出的收藏");
+    return;
+  }
+
+  const filename = `提问小室收藏-${formatDateForFile()}.md`;
+  const markdown = savedToMarkdown();
+
+  if (hasAndroidStorage && typeof window.AndroidStorage.shareMarkdown === "function") {
+    const ok = window.AndroidStorage.shareMarkdown(filename, markdown);
+    showToast(ok ? "已打开导出面板" : "导出失败");
+    return;
+  }
+
+  downloadTextFile(filename, markdown);
+  showToast("已导出 Markdown");
+}
+
 async function copyText(text, message = "已复制") {
   try {
     await navigator.clipboard.writeText(text);
@@ -648,6 +714,7 @@ function initEvents() {
   elements.copyAllButton.addEventListener("click", () => copyText(currentToText(), "已复制全部"));
   elements.copyStarterButton.addEventListener("click", () => copyText(state.current.starter, "已复制开场句"));
   elements.copyThreadButton.addEventListener("click", () => copyText(state.current.threads.join(" / "), "已复制线索串"));
+  elements.exportSavedButton.addEventListener("click", exportSaved);
 
   elements.promptGrid.addEventListener("click", (event) => {
     const button = event.target.closest("button");

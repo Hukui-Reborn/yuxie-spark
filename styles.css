@@ -1,17 +1,18 @@
 :root {
   color-scheme: light;
-  --bg: #f5f7f8;
+  --bg: #f7f8f6;
   --panel: #ffffff;
-  --panel-alt: #eef3f2;
-  --ink: #182126;
+  --panel-alt: #f1f5f3;
+  --ink: #17211e;
   --muted: #69767d;
-  --line: #dce4e5;
+  --line: #dfe6e3;
   --accent: #0e827e;
   --accent-strong: #0a615e;
   --coral: #d95f43;
   --violet: #6657b8;
   --gold: #b27a1f;
-  --shadow: 0 18px 48px rgba(26, 37, 43, 0.11);
+  --shadow: 0 12px 30px rgba(26, 37, 43, 0.08);
+  --soft-shadow: 0 8px 22px rgba(26, 37, 43, 0.06);
   --radius: 8px;
   --focus: 0 0 0 3px rgba(14, 130, 126, 0.2);
   font-family: "Inter", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
@@ -31,6 +32,7 @@ body.dark {
   --violet: #9f95ef;
   --gold: #e1af55;
   --shadow: 0 18px 48px rgba(0, 0, 0, 0.28);
+  --soft-shadow: 0 10px 26px rgba(0, 0, 0, 0.22);
   --focus: 0 0 0 3px rgba(56, 189, 182, 0.2);
 }
 
@@ -41,10 +43,7 @@ body.dark {
 body {
   min-height: 100vh;
   margin: 0;
-  background:
-    linear-gradient(135deg, rgba(14, 130, 126, 0.08), transparent 32%),
-    linear-gradient(315deg, rgba(217, 95, 67, 0.08), transparent 28%),
-    var(--bg);
+  background: var(--bg);
   color: var(--ink);
 }
 
@@ -79,7 +78,7 @@ select:focus-visible {
 .control-panel,
 .writing-board,
 .saved-panel {
-  background: color-mix(in srgb, var(--panel) 94%, transparent);
+  background: color-mix(in srgb, var(--panel) 97%, transparent);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
@@ -101,6 +100,7 @@ select:focus-visible {
 .writing-board {
   min-height: calc(100vh - 36px);
   padding: 22px;
+  box-shadow: var(--soft-shadow);
 }
 
 .saved-panel {
@@ -171,6 +171,12 @@ h3 {
   border-radius: var(--radius);
   background: var(--panel);
   color: var(--ink);
+  transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+}
+
+.icon-button:hover {
+  border-color: color-mix(in srgb, var(--accent) 36%, var(--line));
+  background: color-mix(in srgb, var(--accent) 7%, var(--panel));
 }
 
 .icon-button svg,
@@ -216,6 +222,7 @@ select {
   background: var(--panel);
   color: var(--ink);
   padding: 0 12px;
+  transition: border-color 140ms ease, background 140ms ease;
 }
 
 select {
@@ -256,6 +263,7 @@ select {
   font-size: 0.9rem;
   font-weight: 750;
   user-select: none;
+  transition: border-color 140ms ease, color 140ms ease, background 140ms ease;
 }
 
 .segmented input {
@@ -315,6 +323,7 @@ select {
   margin-top: 22px;
   background: var(--accent);
   color: #ffffff;
+  box-shadow: 0 10px 22px rgba(14, 130, 126, 0.18);
 }
 
 .primary-action:hover {
@@ -328,7 +337,7 @@ select {
 
 .secondary-action {
   border: 1px solid var(--line);
-  background: var(--panel-alt);
+  background: color-mix(in srgb, var(--panel-alt) 72%, var(--panel));
   color: var(--ink);
   font-size: 0.88rem;
 }
@@ -347,7 +356,7 @@ select {
   padding: 18px;
   border-left: 5px solid var(--coral);
   border-radius: var(--radius);
-  background: var(--panel-alt);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--coral) 8%, var(--panel)), var(--panel-alt));
 }
 
 .starter-card p {
@@ -374,6 +383,13 @@ select {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--panel);
+  box-shadow: var(--soft-shadow);
+  transition: transform 140ms ease, border-color 140ms ease, box-shadow 140ms ease;
+}
+
+.prompt-card:hover {
+  border-color: color-mix(in srgb, var(--accent) 30%, var(--line));
+  transform: translateY(-1px);
 }
 
 .prompt-meta {
@@ -390,7 +406,7 @@ select {
   min-height: 28px;
   padding: 0 9px;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--violet) 14%, var(--panel));
+  background: color-mix(in srgb, var(--violet) 10%, var(--panel));
   color: var(--violet);
   font-size: 0.78rem;
   font-weight: 850;
@@ -483,6 +499,17 @@ select {
   font-weight: 850;
 }
 
+.saved-tools {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.saved-tools .icon-button {
+  width: 34px;
+  height: 34px;
+}
+
 .saved-list {
   display: grid;
   gap: 10px;
@@ -496,6 +523,7 @@ select {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--panel);
+  box-shadow: var(--soft-shadow);
 }
 
 .saved-item p {
