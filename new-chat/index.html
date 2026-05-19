@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>提问小室</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="control-panel" aria-label="写作设置">
+        <div class="brand-row">
+          <div>
+            <p class="eyebrow" id="todayLabel">今天</p>
+            <h1>提问小室</h1>
+          </div>
+          <button class="icon-button" id="themeToggle" type="button" aria-label="切换深色模式" title="切换深色模式">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 3.2a.8.8 0 0 1 .8.8v1.4a.8.8 0 1 1-1.6 0V4a.8.8 0 0 1 .8-.8Zm6.2 2.6a.8.8 0 0 1 0 1.1l-1 1a.8.8 0 0 1-1.1-1.1l1-1a.8.8 0 0 1 1.1 0ZM20.8 12a.8.8 0 0 1-.8.8h-1.4a.8.8 0 0 1 0-1.6H20a.8.8 0 0 1 .8.8ZM17.2 16.1l1 1a.8.8 0 1 1-1.1 1.1l-1-1a.8.8 0 0 1 1.1-1.1ZM12 17.8a.8.8 0 0 1 .8.8V20a.8.8 0 1 1-1.6 0v-1.4a.8.8 0 0 1 .8-.8ZM7.9 16.1a.8.8 0 0 1 0 1.1l-1 1a.8.8 0 0 1-1.1-1.1l1-1a.8.8 0 0 1 1.1 0ZM6.2 12a.8.8 0 0 1-.8.8H4a.8.8 0 1 1 0-1.6h1.4a.8.8 0 0 1 .8.8ZM7.9 6.8a.8.8 0 1 1-1.1 1.1l-1-1a.8.8 0 0 1 1.1-1.1l1 1ZM12 7.3a4.7 4.7 0 1 1 0 9.4 4.7 4.7 0 0 1 0-9.4Z" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="file-mode-notice" id="fileModeNotice" hidden>
+          当前是直接打开的 HTML 页面，浏览器不能把收藏写入文件。请双击 start-local.cmd 打开可保存版本。
+        </div>
+
+        <label class="field">
+          <span>今天的词</span>
+          <input id="seedInput" type="text" maxlength="24" placeholder="雨、争执、散步、疲惫" autocomplete="off" />
+        </label>
+
+        <fieldset class="segmented" aria-label="写作方向">
+          <legend>方向</legend>
+          <label><input type="radio" name="direction" value="daily" checked />日常</label>
+          <label><input type="radio" name="direction" value="emotion" />情绪</label>
+          <label><input type="radio" name="direction" value="relationship" />关系</label>
+          <label><input type="radio" name="direction" value="memory" />回忆</label>
+          <label><input type="radio" name="direction" value="thought" />想法</label>
+          <label><input type="radio" name="direction" value="random" />随机</label>
+        </fieldset>
+
+        <div class="two-column-fields">
+          <label class="field">
+            <span>语气</span>
+            <select id="toneSelect">
+              <option value="soft">温柔</option>
+              <option value="curious">好奇</option>
+              <option value="sharp">锋利</option>
+              <option value="light">轻松</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>数量</span>
+            <select id="countSelect">
+              <option value="4">4 条</option>
+              <option value="6" selected>6 条</option>
+              <option value="8">8 条</option>
+            </select>
+          </label>
+        </div>
+
+        <label class="range-field">
+          <span>深度</span>
+          <input id="depthRange" type="range" min="1" max="5" step="1" value="3" />
+          <output id="depthOutput">适中</output>
+        </label>
+
+        <button class="primary-action" id="generateButton" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M19.3 7.6 16.4 4.7a1 1 0 0 0-1.4 0L4.9 14.8a1 1 0 0 0-.3.7v3.9h3.9a1 1 0 0 0 .7-.3L19.3 9a1 1 0 0 0 0-1.4Zm-2.1.7-9.1 9.1H6.6v-1.5l9.1-9.1 1.5 1.5ZM19 14.2a.9.9 0 0 1 .9.9v4a.9.9 0 0 1-.9.9h-4a.9.9 0 1 1 0-1.8h3.1v-3.1a.9.9 0 0 1 .9-.9ZM5 5.8h3.1V2.7a.9.9 0 1 1 1.8 0v4A.9.9 0 0 1 9 7.6H5.9v3.1a.9.9 0 1 1-1.8 0v-4A.9.9 0 0 1 5 5.8Z" />
+          </svg>
+          生成一组
+        </button>
+
+        <div class="quick-stack" aria-label="快捷操作">
+          <button id="copyAllButton" class="secondary-action" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M8 7a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3h-1v1a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3v-6a3 3 0 0 1 3-3h1V7Zm2 1h3a3 3 0 0 1 3 3v3h1a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v1Zm-3 2a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-6a1 1 0 0 0-1-1H7Z" />
+            </svg>
+            复制全部
+          </button>
+          <button id="clearSavedButton" class="secondary-action" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M8 5V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v1h3a1 1 0 1 1 0 2h-1v12a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3V7H5a1 1 0 0 1 0-2h3Zm2 0h4V4h-4v1Zm-2 2v12a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V7H8Zm2.7 3a1 1 0 0 1 1 1v5a1 1 0 0 1-2 0v-5a1 1 0 0 1 1-1Zm3.6 0a1 1 0 0 1 1 1v5a1 1 0 0 1-2 0v-5a1 1 0 0 1 1-1Z" />
+            </svg>
+            清空收藏
+          </button>
+        </div>
+      </section>
+
+      <section class="writing-board" aria-live="polite">
+        <div class="board-header">
+          <div>
+            <p class="eyebrow">今日入口</p>
+            <h2 id="leadTitle">从一个具体瞬间开始</h2>
+          </div>
+          <p id="statusText" class="status-text">已生成 6 条</p>
+        </div>
+
+        <article class="starter-card">
+          <p id="starterText">先说一件今天在脑子里停留最久的小事，它发生在什么地方，周围有什么声音？</p>
+          <button class="icon-button" id="copyStarterButton" type="button" aria-label="复制开场句" title="复制开场句">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M8 7a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3h-1v1a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3v-6a3 3 0 0 1 3-3h1V7Zm2 1h3a3 3 0 0 1 3 3v3h1a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v1Zm-3 2a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-6a1 1 0 0 0-1-1H7Z" />
+            </svg>
+          </button>
+        </article>
+
+        <div class="prompt-grid" id="promptGrid"></div>
+
+        <section class="thread-panel" aria-label="线索串">
+          <div class="section-title">
+            <h3>线索串</h3>
+            <button class="icon-button" id="copyThreadButton" type="button" aria-label="复制线索串" title="复制线索串">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M8 7a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3h-1v1a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3v-6a3 3 0 0 1 3-3h1V7Zm2 1h3a3 3 0 0 1 3 3v3h1a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v1Zm-3 2a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-6a1 1 0 0 0-1-1H7Z" />
+              </svg>
+            </button>
+          </div>
+          <div class="thread-list" id="threadList"></div>
+        </section>
+      </section>
+
+      <aside class="saved-panel" aria-label="收藏">
+        <div class="section-title">
+          <h2>收藏</h2>
+          <span id="savedCount">0</span>
+        </div>
+        <div class="saved-list" id="savedList"></div>
+      </aside>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
