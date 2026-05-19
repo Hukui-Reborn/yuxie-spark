@@ -7,4 +7,5 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Actions works"
+      - name: Test workflow
+        run: echo "Actions works"
